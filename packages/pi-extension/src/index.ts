@@ -525,6 +525,10 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_shutdown", () => {
     detachPrefixShortcut?.();
     detachPrefixShortcut = undefined;
+    // The 60s done-widget refresh timer is only cleared when the review state
+    // changes. Left running, it fires after the session is torn down and touches
+    // a stale extension ctx, which crashes the process.
+    stopDoneRefreshTimer();
   });
 
   for (const action of fishwordActions) {
